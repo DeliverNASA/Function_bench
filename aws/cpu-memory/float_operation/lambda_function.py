@@ -1,5 +1,6 @@
 import math
 from time import time
+import numpy as np
 
 
 def float_operations(n):
@@ -15,5 +16,18 @@ def float_operations(n):
 def lambda_handler(event, context):
     n = int(event['n'])
     result = float_operations(n)
-    print(result)
+    # print(result)
     return result
+
+
+if __name__ == '__main__':
+    event = dict()
+    event['n'] = 1000000
+
+    print()
+    print("#### test: float_operation ####")
+    total = list()
+    for i in range(10):
+        total.append(lambda_handler(event=event, context=None))
+    print("mean: " + str(np.mean(total)))
+    print("std:  " + str(np.std(total)))

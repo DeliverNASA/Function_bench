@@ -2,6 +2,7 @@ from time import time
 import six
 import json
 from chameleon import PageTemplate
+import numpy as np
 
 
 BIGTABLE_ZPT = """\
@@ -24,6 +25,7 @@ def lambda_handler(event, context):
     start = time()
     tmpl = PageTemplate(BIGTABLE_ZPT)
 
+    # 创建一个row * col的矩阵
     data = {}
     for i in range(num_of_cols):
         data[str(i)] = i
@@ -33,6 +35,20 @@ def lambda_handler(event, context):
 
     data = tmpl.render(options=options)
     latency = time() - start
+    # print(latency)
 
-    result = json.dumps({'latency': latency, 'data': data})
-    return result
+    # result = json.dumps({'latency': latency, 'data': data})
+    return latency
+
+if __name__ == "__main__":
+    event = dict()
+    event['num_of_rows'] = 400
+    event['num_of_cols'] = 400
+
+    print()
+    print("#### test: chameleon ####")
+    total = list()
+    for i in range(10):
+        total.append(lambda_handler(event=event, context=None))
+    print("mean: " + str(np.mean(total)))
+    print("std:  " + str(np.std(total)))

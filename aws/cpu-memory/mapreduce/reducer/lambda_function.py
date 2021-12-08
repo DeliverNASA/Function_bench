@@ -27,6 +27,9 @@ def lambda_handler(event, context):
         all_keys.append(obj.key)
 
     for key in all_keys:
+        # 根据key进行分类的统计
+        # response 是key相关的内容
+        # contents 是response中的主体
         start = time()
         response = s3_client.get_object(Bucket=job_bucket, Key=key)
         contents = response['Body'].read()
@@ -34,6 +37,7 @@ def lambda_handler(event, context):
 
         start = time()
         data = json.loads(contents)
+        # 对所有的语言名称进行统计
         for key in data:
             output[key] += data[key]
         reduce += time() - start

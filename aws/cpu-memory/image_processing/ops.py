@@ -1,6 +1,6 @@
 from PIL import Image, ImageFilter
 
-TMP = "/tmp/"
+TMP = "./dataset/image_transform/"
 
 
 def flip(image, file_name):

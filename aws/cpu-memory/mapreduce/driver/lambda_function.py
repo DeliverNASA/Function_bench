@@ -20,6 +20,7 @@ def map_invoke_lambda(job_bucket, bucket, all_keys, batch_size, mapper_id):
         key += item + '/'
     key = key[:-1]
 
+    # 调用mapper函数
     response = lambda_client.invoke(
         FunctionName='mapper',
         InvocationType='RequestResponse',
@@ -36,6 +37,7 @@ def map_invoke_lambda(job_bucket, bucket, all_keys, batch_size, mapper_id):
     json_data = json.loads(output)
 
     global total_map, total_network
+    # 统计所有mapper的耗时
     total_map += float(json_data['map'])
     total_network += float(json_data['network'])
 
@@ -69,20 +71,24 @@ def lambda_handler(event, context):
     total_size = len(all_keys)
     batch_size = 0
 
+    # 按照mapper的个数设定batch的大小
     if total_size % n_mapper == 0:
         batch_size = total_size / n_mapper
     else:
         batch_size = total_size // n_mapper + 1
 
+    # 打印每一个mapper所对应的key内容
     for idx in range(n_mapper):
         print("mapper-" + str(idx) + ":" + str(all_keys[idx * batch_size: (idx + 1) * batch_size]))
 
+    # 创建相同规模的线程池进行分布，均执行map_invoke_lambda
     pool = ThreadPool(n_mapper)
     invoke_lambda_partial = partial(map_invoke_lambda, job_bucket, src_bucket, all_keys, batch_size)
     pool.map(invoke_lambda_partial, range(n_mapper))
     pool.close()
     pool.join()
 
+    # 等待map任务完成
     while True:
         job_keys = s3_client.list_objects(Bucket=job_bucket)["Contents"]
         print("Wait Mapper Jobs ...")

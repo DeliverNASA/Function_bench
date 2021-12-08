@@ -1,11 +1,12 @@
-import boto3
-import uuid
+# import boto3
+# import uuid
 from time import time
 import cv2
+import numpy as np
 
-s3_client = boto3.client('s3')
+# s3_client = boto3.client('s3')
 
-tmp = "/tmp/"
+tmp = "/usr/local/test_scripts/dataset/video_transform/"
 FILE_NAME_INDEX = 0
 FILE_PATH_INDEX = 2
 
@@ -43,16 +44,31 @@ def video_processing(object_key, video_path):
 
 
 def lambda_handler(event, context):
-    input_bucket = event['input_bucket']
+    # input_bucket = event['input_bucket']
     object_key = event['object_key']
-    output_bucket = event['output_bucket']
+    # output_bucket = event['output_bucket']
 
-    download_path = tmp+'{}{}'.format(uuid.uuid4(), object_key)
+    # download_path = tmp+'{}{}'.format(uuid.uuid4(), object_key)
+    download_path = './dataset/video/testVideo001.mp4'
 
-    s3_client.download_file(input_bucket, object_key, download_path)
+    # s3_client.download_file(input_bucket, object_key, download_path)
 
     latency, upload_path = video_processing(object_key, download_path)
+    print(latency)
 
-    s3_client.upload_file(upload_path, output_bucket, upload_path.split("/")[FILE_PATH_INDEX])
+    # s3_client.upload_file(upload_path, output_bucket, upload_path.split("/")[FILE_PATH_INDEX])
 
     return latency
+
+
+if __name__ == "__main__":
+    event = dict()
+    event['object_key'] = 'testVideo001.mp4'
+
+    print()
+    print("#### test: video_processing ####")
+    total = list()
+    for i in range(1):
+        total.append(lambda_handler(event=event, context=None))
+    print("mean: " + str(np.mean(total)))
+    print("std:  " + str(np.std(total)))

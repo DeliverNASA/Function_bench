@@ -3,7 +3,7 @@ from time import time
 
 s3_client = boto3.client('s3')
 
-
+# 测试上传或者下载文件所需要的时间
 def lambda_handler(event, context):
     input_bucket = event['input_bucket']
     object_key = event['object_key']

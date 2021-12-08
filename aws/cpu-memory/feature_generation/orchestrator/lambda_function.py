@@ -8,6 +8,7 @@ lambda_client = boto3.client('lambda')
 
 
 def invoke_lambda(bucket, key):
+    # 远程过程调用，RPC
     lambda_client.invoke(
         FunctionName='feature_extractor',
         InvocationType='RequestResponse',

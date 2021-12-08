@@ -8,7 +8,7 @@ s3_client = boto3.client('s3')
 
 def lambda_handler(event, context):
     bucket = event['input_bucket']
-    s3_bucket = s3.Bucket(bucket)
+    # s3_bucket = s3.Bucket(bucket)
 
     result = []
     latency = 0
@@ -19,9 +19,10 @@ def lambda_handler(event, context):
         word = body.replace("'", '').split(',')
         result.extend(word)
         latency += time() - start
-
+        
     print(len(result))
 
+    # 计算全局的tf-idf向量
     tfidf_vect = TfidfVectorizer().fit(result)
     feature = str(tfidf_vect.get_feature_names())
     feature = feature.lstrip('[').rstrip(']').replace(' ' , '')

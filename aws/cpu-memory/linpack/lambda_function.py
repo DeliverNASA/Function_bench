@@ -1,5 +1,6 @@
 from numpy import matrix, linalg, random
 from time import time
+import numpy as np
 
 
 def linpack(n):
@@ -21,10 +22,11 @@ def linpack(n):
 
     mflops = (ops * 1e-6 / latency)
 
-    result = {
-        'mflops': mflops,
-        'latency': latency
-    }
+    # result = {
+    #     'mflops': mflops,
+    #     'latency': latency
+    # }
+    result = latency
 
     return result
 
@@ -32,5 +34,18 @@ def linpack(n):
 def lambda_handler(event, context):
     n = int(event['n'])
     result = linpack(n)
-    print(result)
+    # print(result)
     return result
+
+
+if __name__ == '__main__':
+    event = dict()
+    event['n'] = 200
+
+    print()
+    print("#### test: linpack ####")
+    total = list()
+    for i in range(100):
+        total.append(lambda_handler(event=event, context=None))
+    print("mean: " + str(np.mean(total)))
+    print("std:  " + str(np.std(total)))

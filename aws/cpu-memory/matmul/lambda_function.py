@@ -15,5 +15,17 @@ def matmul(n):
 def lambda_handler(event, context):
     n = int(event['n'])
     result = matmul(n)
-    print(result)
+    # print(result)
     return result
+
+if __name__ == '__main__':
+    event = dict()
+    event['n'] = 300
+
+    print()
+    print("#### test: matmul ####")
+    total = list()
+    for i in range(100):
+        total.append(lambda_handler(event=event, context=None))
+    print("mean: " + str(np.mean(total)))
+    print("std:  " + str(np.std(total)))

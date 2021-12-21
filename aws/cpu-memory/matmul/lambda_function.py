@@ -20,7 +20,7 @@ def lambda_handler(event, context):
 
 if __name__ == '__main__':
     event = dict()
-    event['n'] = 300
+    event['n'] = 1000
 
     print()
     print("#### test: matmul ####")

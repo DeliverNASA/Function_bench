@@ -40,12 +40,14 @@ def lambda_handler(event, context):
 
 if __name__ == '__main__':
     event = dict()
-    event['n'] = 200
+    event['n'] = 1000
 
     print()
     print("#### test: linpack ####")
     total = list()
     for i in range(100):
         total.append(lambda_handler(event=event, context=None))
+    # 这里在测试的时候会出现有一组数据极大的偏离
+    # total.remove(max(total))
     print("mean: " + str(np.mean(total)))
     print("std:  " + str(np.std(total)))

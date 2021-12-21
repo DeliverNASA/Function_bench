@@ -27,11 +27,13 @@
 
 建立两个容器，并将工作目录和所需要的python第三方包都挂载到容器对应的目录之下。
 
+为避免多核CPU进行进程的调度，每一个容器都设置为只占用一个CPU核心（编号0）
+
 容器1时间片设置为每1s占用0.2秒cpu资源：
 
 ```shell
 docker run -itd -v "$(pwd):/usr/local/test_scripts" -v "/usr/local/lib/python3.8/dist-packages:/usr/local/lib/python3.8/dist-packages" \
-    --cpu-period 1000000 --cpu-quota 200000 \
+    --cpuset-cpus 0 --cpu-period 1000000 --cpu-quota 200000 \
     --name container1 dolphin/ubuntu
     
 docker exec -it container1 /bin/bash
@@ -41,7 +43,7 @@ docker exec -it container1 /bin/bash
 
 ```shell
 docker run -itd -v "$(pwd):/usr/local/test_scripts" -v "/usr/local/lib/python3.8/dist-packages:/usr/local/lib/python3.8/dist-packages" \
-    --cpu-period 1000000 --cpu-quota 1000000 \
+    --cpuset-cpus 0 --cpu-period 1000000 --cpu-quota 1000000 \
     --name container2 dolphin/ubuntu
     
 docker exec -it container2 /bin/bash
@@ -69,13 +71,17 @@ docker exec -it container2 /bin/bash
 
    参数设置：row=col=400
 
-   测试结果：
+   单独测试结果：
 
-   容器1：mean：4.103，std：0.238
+   容器1：mean：3.979，std：0.104
 
-   容器2：mean：0.920，std：0.059
+   容器2：mean：0.722，std：0.004
 
-   比值：4.459
+   混部测试结果：
+
+   容器1：mean：4.218，std：0.507
+
+   容器2：mean：0.922，std：0.046
 
    
 
@@ -90,14 +96,18 @@ docker exec -it container2 /bin/bash
    ```
 
    参数设置：选择的语料为reviews10mb.csv
-   
-   测试结果：
 
-   容器1：mean：4.650，std：0.390
+   单独测试结果：
 
-   容器2：mean：0.976，std：0.020
+   容器1：mean：4.361，std：0.398
 
-   比值：4.793
+   容器2：mean：0.768，std：0.009
+
+   混部测试结果：
+
+   容器1：mean：4.965，std：0.312
+
+   容器2：mean：1.007，std：0.087
 
    
 
@@ -111,13 +121,17 @@ docker exec -it container2 /bin/bash
 
    参数设置：n=1000000
 
-   测试结果：
+   单独测试结果：
 
-   容器1：mean：2.594，std：0.428
+   容器1：mean：2.312，std：0.372
 
-   容器2：mean：0.584，std：0.130
+   容器2：mean：0.534，std：0.008
 
-   比值：4.441
+   混部测试结果：
+
+   容器1：mean：2.686，std：0.274
+
+   容器2：mean：0.701，std：0.071
 
    
 
@@ -139,13 +153,17 @@ docker exec -it container2 /bin/bash
 
    参数设置：图片为animal-dog.jpg
 
-   测试结果：
+   单独测试结果：
 
-   容器1：mean：10.299，std：0.746
+   容器1：mean：9.909，std：0.253
 
-   容器2：mean：2.282，std：0.122
+   容器2：mean：2.254，std：0.019
 
-   比值：4.513
+   混部测试结果：
+
+   容器1：mean：11.103，std：0.199
+
+   容器2：mean：2.784，std：0.082
 
    
 
@@ -157,15 +175,19 @@ docker exec -it container2 /bin/bash
    python3 ./aws/cpu-memory/linpack/lambda_function.py 
    ```
 
-   参数设置：n=200，为减少随机数生成导致的误差，这里测试次数设为100次
+   参数设置：n=1000，为减少随机数生成导致的误差，这里测试次数设为100次
 
-   测试结果：
+   单独测试结果：
 
    容器1：mean：0.113，std：0.384
 
-   容器2：mean：0.022，std：0.123
+   容器2：mean：0.030，std：0.001
 
-   比值：5.136
+   混部测试结果：
+
+   容器1：mean：0.148，std：0.222
+
+   容器2：mean：0.039，std：0.014
 
    
 
@@ -177,15 +199,19 @@ docker exec -it container2 /bin/bash
    python3 ./aws/cpu-memory/matmul/lambda_function.py 
    ```
 
-   参数设置：n=300，为减少随机数生成导致的误差，这里测试次数设为100次
+   参数设置：n=1000，为减少随机数生成导致的误差，这里测试次数设为100次
 
-   测试结果：
+   单独测试结果：
 
-   容器1：mean：0.265，std：0.432
+   容器1：mean：0.238，std：0.322
 
-   容器2：mean：0.054，std：0.201
+   容器2：mean：0.047，std：0.001
 
-   比值：4.907
+   混部测试结果：
+
+   容器1：mean：0.273，std：0.272
+
+   容器2：mean：0.069，std：0.022
 
    
 
@@ -205,15 +231,21 @@ docker exec -it container2 /bin/bash
 
    参数设置：训练集为reviews10mb.csv，测试集为reviews20mb.csv
 
-   测试结果：
+   单独测试结果：
 
    容器1：mean：29.914，std：0.248
 
-   容器2：mean：6.587，std：0.205
+   容器2：mean：6.594，std：0.037
 
-   比值：4.541
+   混部测试结果：
 
-   * ml_video_face_detection
+   容器1：mean：33.014，std：1.451
+
+   容器2：mean：8.270，std：0.097
+
+   
+
+   * ml_video_face_detection（时间过长，舍弃）
 
    使用相关的库进行video转换并且在转化过程中对每一帧进行实时的脸部识别（不局限于人类面部）
 
@@ -253,13 +285,17 @@ docker exec -it container2 /bin/bash
 
    参数设置：训练集reviews10mb.csv
 
-   测试结果：
+   混部测试结果：
 
-   容器1：mean：31.373，std：1.466
+   容器1：mean：29.223，std：0.365
 
    容器1：mean：6.397，std：0.591
 
-   比值：4.904
+   混部测试结果：
+
+   容器1：mean：32.992，std：0.844
+
+   容器1：mean：8.418，std：0.095
 
    
 
@@ -275,17 +311,21 @@ docker exec -it container2 /bin/bash
 
    参数设置：字符串长度为1024，循环次数为16次
 
-   测试结果：
+   单独测试结果：
 
-   容器1：mean：0.896，std：0.243
+   容器1：mean：0.810，std：0.325
 
-   容器2：mean：0.177，std：0.072
+   容器2：mean：0.197，std：0.001
 
-   比值：5.062
+   混部测试结果：
+
+   容器1：mean：0.993，std：0.014
+
+   容器2：mean：0.255，std：0.063
 
    
 
-10. video_processing
+10. video_processing（时间过长，舍弃）
 
     对video进行处理，主要是逐步抽取video中的帧，并进行灰化，将结果保存为一个新的avi文件。
 
@@ -402,7 +442,23 @@ docker exec -it container2 /bin/bash
 
 1. cpu-memory类型的实验
 
+   | 测试样例 \ 容器    | 单独运行：容器1 | 混部运行：容器1 | 比值  | 单独运行：容器2 | 混部运行：容器2 | 比值  | 容器2混部运行 | 比值  |
+   | ------------------ | --------------- | --------------- | ----- | --------------- | --------------- | ----- | ------------- | ----- |
+   | chameleon          | 3.979           | 4.218           | 1.060 | 0.722           | 0.922           | 1.277 | 1.593         | 2.164 |
+   | feature_generation | 4.361           | 4.965           | 1.138 | 0.768           | 1.007           | 1.311 | 2.008         | 2.149 |
+   | float_operation    | 2.312           | 2.686           | 1.161 | 0.534           | 0.701           | 1.312 | 1.106         | 2.071 |
+   | image_processing   | 9.909           | 11.103          | 1.120 | 2.254           | 2.784           | 1.235 | 5.047         | 2.239 |
+   | linpack            | 0.113           | 0.148           | 1.309 | 0.030           | 0.039           | 1.300 | 0.065         | 2.166 |
+   | matmul             | 0.238           | 0.273           | 1.147 | 0.047           | 0.069           | 1.468 | 0.120         | 2.553 |
+   | ml_lr_prediction   | 29.914          | 33.014          | 1.103 | 6.594           | 8.270           | 1.254 | 14.284        | 2.166 |
+   | model_training     | 29.223          | 32.992          | 1.163 | 6.397           | 8.418           | 1.317 | 13.448        | 2.102 |
+   | pyaes              | 0.810           | 0.993           | 1.225 | 0.197           | 0.255           | 1.294 | 0.404         | 2.050 |
+
    容器1和容器2表现出相对规律性的性能关系，从延迟的角度，容器1的延迟大概是容器2的4～6倍，这与时间片的分配策略呈现高度相关性（容器1为每1秒占用0.2秒cpu，容器2为每1秒占用1秒cpu），可以验证出在保证其他条件不变的情况下，执行效率和时间片长度呈现线性化关系。
+
+   混部运行相比较于单独运行，由于资源争用现象，两个容器的性能都有所降低，其中容器1性能降低10%～20%，容器2性能降低20%～30%，这种现象表现高资源占用的容器受影响更大。
+
+   此外，还另外作了一组两个容器2类型混部的实验（即让每一个容器最多都允许独占一个核心），结果表明，相比较于单独运行，两个容器的性能大致下降到原来的50%以下，可以看出操作系统在分配策略上近似于按照公平的原则，但同样会带来额外的调度开销。
 
    需要指出的是，对于运行时随机生成操作数的任务（例如malmul和linpack），其函数的计算复杂程度和随机生成的数有关，因此多次执行时的延迟也出现大幅度的波动（从方差可以看出）。不过从结果上看，容器1的延迟仍然显著高于容器2。
 

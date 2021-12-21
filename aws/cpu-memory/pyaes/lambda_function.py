@@ -40,7 +40,7 @@ def lambda_handler(event, context):
 if __name__ == "__main__":
     event = dict()
     event['length_of_message'] = 1024
-    event['num_of_iterations'] = 16
+    event['num_of_iterations'] = 32
 
     print()
     print("#### test: pyaes ####")

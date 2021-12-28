@@ -6,7 +6,7 @@ os.system("python3 ./aws/cpu-memory/feature_generation/feature_extractor/lambda_
 os.system("python3 ./aws/cpu-memory/float_operation/lambda_function.py")
 os.system("python3 ./aws/cpu-memory/image_processing/lambda_function.py")
 # os.system("python3 ./aws/cpu-memory/linpack/lambda_function.py")
-os.system("python3 ./aws/cpu-memory/matmul/lambda_function.py")
+# os.system("python3 ./aws/cpu-memory/matmul/lambda_function.py")
 # os.system("python3 ./aws/cpu-memory/model_serving/ml_lr_prediction/lambda_function.py")
 # os.system("python3 ./aws/cpu-memory/model_training/lambda_function.py")
 os.system("python3 ./aws/cpu-memory/pyaes/lambda_function.py")

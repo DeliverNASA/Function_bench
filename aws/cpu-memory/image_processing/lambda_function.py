@@ -52,7 +52,7 @@ if __name__ == '__main__':
     print()
     print("#### test: image_processing ####")
     total = list()
-    for i in range(10):
+    for i in range(5):
         total.append(lambda_handler(event=event, context=None))
     print("mean: " + str(np.mean(total)))
     print("std:  " + str(np.std(total)))

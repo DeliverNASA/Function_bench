@@ -59,6 +59,9 @@ docker run -itd -v "$(pwd):/usr/local/test_scripts" -v "/usr/local/lib/python3.8
 docker exec -it container3 /bin/bash
 ```
 
+```shell
+apt install -y libjpeg8 libimagequant0 libtiff5
+```
 
 
 __补充实验__2

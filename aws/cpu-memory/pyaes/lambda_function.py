@@ -3,6 +3,12 @@ import random
 import string
 import pyaes
 import numpy as np
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-length_of_message', type=int, default=1024)
+parser.add_argument('-num_of_iterations', type=int, default=32)
+args = parser.parse_args()
 
 
 def generate(length):
@@ -39,8 +45,8 @@ def lambda_handler(event, context):
 
 if __name__ == "__main__":
     event = dict()
-    event['length_of_message'] = 1024
-    event['num_of_iterations'] = 32
+    event['length_of_message'] = args.length_of_message
+    event['num_of_iterations'] = args.num_of_iterations
 
     print()
     print("#### test: pyaes ####")

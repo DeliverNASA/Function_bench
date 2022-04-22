@@ -1,9 +1,9 @@
 import os
 
 # cpu-memory
-os.system("python3 ./aws/cpu-memory/chameleon/lambda_function.py")
-os.system("python3 ./aws/cpu-memory/feature_generation/feature_extractor/lambda_function.py")
-os.system("python3 ./aws/cpu-memory/float_operation/lambda_function.py")
+# os.system("python3 ./aws/cpu-memory/chameleon/lambda_function.py")
+# os.system("python3 ./aws/cpu-memory/feature_generation/feature_extractor/lambda_function.py")
+# os.system("python3 ./aws/cpu-memory/float_operation/lambda_function.py")
 os.system("python3 ./aws/cpu-memory/image_processing/lambda_function.py")
 # os.system("python3 ./aws/cpu-memory/linpack/lambda_function.py")
 # os.system("python3 ./aws/cpu-memory/matmul/lambda_function.py")

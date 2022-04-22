@@ -3,8 +3,13 @@ import pandas as pd
 from time import time
 import re
 import numpy as np
+import argparse
 
-# s3 = boto3.client('s3')
+parser = argparse.ArgumentParser()
+parser.add_argument('-input_bucket', type=str, default="./dataset/amzn_fine_food_reviews")
+parser.add_argument('-key', type=str, default="reviews10mb.csv")
+args = parser.parse_args()
+
 
 # 只匹配a-z之间的字符
 cleanup_re = re.compile('[^a-z]+')
@@ -49,8 +54,8 @@ def lambda_handler(event, context):
 
 if __name__ == "__main__":
     event = dict()
-    event['input_bucket'] = "./dataset/amzn_fine_food_reviews"
-    event['key'] = "reviews10mb.csv"
+    event['input_bucket'] = args.input_bucket
+    event['key'] = args.key
 
     print()
     print("#### test: feature_extractor ####")

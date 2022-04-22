@@ -9,6 +9,11 @@ import pandas as pd
 from time import process_time_ns, time
 import re
 import io
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-dataset_object_key', type=str, default="reviews10mb.csv")
+args = parser.parse_args()
 
 
 # s3_client = boto3.client('s3')
@@ -61,7 +66,7 @@ def lambda_handler(event, context):
 if __name__ == "__main__":
     event = dict()
     event['dataset_bucket'] = "./dataset/amzn_fine_food_reviews"
-    event['dataset_object_key'] = "reviews10mb.csv"
+    event['dataset_object_key'] = args.dataset_object_key
     # event['model_bucket'] = ""
     event['model_object_key'] = "tmp_lr_model.pk"
 

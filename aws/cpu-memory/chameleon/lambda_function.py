@@ -3,7 +3,12 @@ import six
 import json
 from chameleon import PageTemplate
 import numpy as np
+import argparse
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-num_of_rows', type=int, default=400)
+parser.add_argument('-num_of_cols', type=int, default=400)
+args = parser.parse_args()
 
 BIGTABLE_ZPT = """\
 <table xmlns="http://www.w3.org/1999/xhtml"
@@ -42,8 +47,8 @@ def lambda_handler(event, context):
 
 if __name__ == "__main__":
     event = dict()
-    event['num_of_rows'] = 400
-    event['num_of_cols'] = 400
+    event['num_of_rows'] = args.num_of_rows
+    event['num_of_cols'] = args.num_of_cols
 
     print()
     print("#### test: chameleon ####")

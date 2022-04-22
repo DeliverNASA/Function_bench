@@ -1,7 +1,11 @@
 import math
 from time import time
 import numpy as np
+import argparse
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-n', type=int, default=1000000)
+args = parser.parse_args()
 
 def float_operations(n):
     start = time()
@@ -22,7 +26,7 @@ def lambda_handler(event, context):
 
 if __name__ == '__main__':
     event = dict()
-    event['n'] = 1000000
+    event['n'] = args.n
 
     print()
     print("#### test: float_operation ####")

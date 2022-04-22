@@ -3,8 +3,11 @@
 from time import time
 import cv2
 import numpy as np
+import argparse
 
-# s3_client = boto3.client('s3')
+parser = argparse.ArgumentParser()
+parser.add_argument('-object_key', type=str, default="testVideo001.mp4")
+args = parser.parse_args()
 
 tmp = "/usr/local/test_scripts/dataset/video_transform/"
 FILE_NAME_INDEX = 0
@@ -47,9 +50,9 @@ def lambda_handler(event, context):
     # input_bucket = event['input_bucket']
     object_key = event['object_key']
     # output_bucket = event['output_bucket']
-
+    download_path = event['download_path']
     # download_path = tmp+'{}{}'.format(uuid.uuid4(), object_key)
-    download_path = './dataset/video/testVideo001.mp4'
+    # download_path = './dataset/video/testVideo001.mp4'
 
     # s3_client.download_file(input_bucket, object_key, download_path)
 
@@ -63,7 +66,9 @@ def lambda_handler(event, context):
 
 if __name__ == "__main__":
     event = dict()
-    event['object_key'] = 'testVideo001.mp4'
+    event['object_key'] = args.object_key
+    event['download_path'] = './dataset/video/' + args.object_key
+
 
     print()
     print("#### test: video_processing ####")

@@ -3,8 +3,12 @@
 from time import time
 import numpy as np
 import cv2
+import argparse
 
-# s3_client = boto3.client('s3')
+parser = argparse.ArgumentParser()
+parser.add_argument('-object_key', type=str, default="testVideo001.mp4")
+args = parser.parse_args()
+
 
 dataset_path = "./dataset/"
 result_path = dataset_path + "video_transform/"
@@ -74,10 +78,9 @@ def lambda_handler(event, context):
 if __name__ == "__main__":
     event = dict()
     event['input_bucket'] = dataset_path + "video/"
-    event['object_key'] = "testVideo001.mp4"
+    event['object_key'] = args.object_key
     event['model_bucket'] = dataset_path + "model/"
     event['model_object_key'] = "haarcascade_frontalface_default.xml"
-    # lambda_handler(event, context=None)
 
     print()
     print("#### test: ml_video_face_detection ####")

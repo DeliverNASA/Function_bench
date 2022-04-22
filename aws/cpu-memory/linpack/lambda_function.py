@@ -1,6 +1,11 @@
 from numpy import matrix, linalg, random
 from time import time
 import numpy as np
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-n', type=int, default=1000)
+args = parser.parse_args()
 
 
 def linpack(n):
@@ -21,11 +26,6 @@ def linpack(n):
     latency = time() - start
 
     mflops = (ops * 1e-6 / latency)
-
-    # result = {
-    #     'mflops': mflops,
-    #     'latency': latency
-    # }
     result = latency
 
     return result
@@ -40,7 +40,7 @@ def lambda_handler(event, context):
 
 if __name__ == '__main__':
     event = dict()
-    event['n'] = 1000
+    event['n'] = args.n
 
     print()
     print("#### test: linpack ####")

@@ -6,8 +6,15 @@ import numpy as np
 from time import time
 import os
 import re
+import argparse
 
-# s3_client = boto3.client('s3')
+parser = argparse.ArgumentParser()
+parser.add_argument('-dataset_bucket', type=str, default="amzn_fine_food_reviews/")
+parser.add_argument('-dataset_train_object_key', type=str, default="reviews10mb.csv")
+parser.add_argument('-dataset_test_object_key', type=str, default="reviews20mb.csv")
+args = parser.parse_args()
+
+
 cleanup_re = re.compile('[^a-z]+')
 
 dataset_path = "./dataset/"
@@ -24,17 +31,14 @@ def lambda_handler(event, context):
     x = event['x']
     # print(x)
 
-    dataset_object_key = event['dataset_object_key']
+    dataset_object_key = event['dataset_train_object_key']
     dataset_bucket = event['dataset_bucket']
 
     model_object_key = event['model_object_key']  # example : lr_model.pk
     model_bucket = event['model_bucket']
 
     model_path = model_bucket + model_object_key
-    # if not os.path.isfile(model_path):
-        # s3_client.download_file(model_bucket, model_object_key, model_path)
 
-    # dataset_path = 's3://'+dataset_bucket+'/'+dataset_object_key
     data_path = dataset_bucket + dataset_object_key
     # 这里读取的是reviews20mv.csv数据集合
     dataset = pd.read_csv(data_path)
@@ -56,22 +60,19 @@ def lambda_handler(event, context):
     y = model.predict(X)
 
     latency = time() - start
-    # print(y[0])
-    print(latency)
 
     return latency
-    # return {'y': y, 'latency': latency}
 
 
 if __name__ == "__main__":
     event = dict()
-    event['dataset_bucket'] = dataset_path + "amzn_fine_food_reviews/"
-    event['dataset_object_key'] = "reviews10mb.csv"
+    event['dataset_bucket'] = dataset_path + args.dataset_bucket
+    event['dataset_train_object_key'] = args.dataset_train_object_key
     event['model_bucket'] = dataset_path + "model/"
     event['model_object_key'] = "tmp_lr_model.pk"
 
     # 传入测试集的数据
-    test_path = dataset_path + "amzn_fine_food_reviews/reviews20mb.csv"
+    test_path = dataset_path + args.dataset_bucket + args.dataset_test_object_key
     test_dataset = pd.read_csv(test_path)
     event['x'] = test_dataset['Text']
 

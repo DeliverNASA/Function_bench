@@ -1,5 +1,10 @@
 import numpy as np
 from time import time
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-n', type=int, default=1000)
+args = parser.parse_args()
 
 
 def matmul(n):
@@ -15,12 +20,11 @@ def matmul(n):
 def lambda_handler(event, context):
     n = int(event['n'])
     result = matmul(n)
-    # print(result)
     return result
 
 if __name__ == '__main__':
     event = dict()
-    event['n'] = 1000
+    event['n'] = args.n
 
     print()
     print("#### test: matmul ####")

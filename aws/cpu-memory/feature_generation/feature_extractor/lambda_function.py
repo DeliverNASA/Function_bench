@@ -7,7 +7,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-input_bucket', type=str, default="./dataset/amzn_fine_food_reviews")
-parser.add_argument('-key', type=str, default="reviews10mb.csv")
+parser.add_argument('-object_key', type=str, default="reviews10mb.csv")
 args = parser.parse_args()
 
 
@@ -55,7 +55,7 @@ def lambda_handler(event, context):
 if __name__ == "__main__":
     event = dict()
     event['input_bucket'] = args.input_bucket
-    event['key'] = args.key
+    event['key'] = args.object_key
 
     print()
     print("#### test: feature_extractor ####")

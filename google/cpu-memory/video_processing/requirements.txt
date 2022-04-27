@@ -1,2 +1,0 @@
-opencv-python
-google-cloud-storage

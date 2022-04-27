@@ -1,2 +1,0 @@
-pillow
-google-cloud-storage

@@ -5,6 +5,9 @@ import cv2
 import numpy as np
 import argparse
 
+from time_limit import set_time_limit
+
+
 parser = argparse.ArgumentParser()
 parser.add_argument('-object_key', type=str, default="testVideo001.mp4")
 args = parser.parse_args()
@@ -45,7 +48,7 @@ def video_processing(object_key, video_path):
     out.release()
     return latency, result_file_path
 
-
+@set_time_limit()
 def lambda_handler(event, context):
     # input_bucket = event['input_bucket']
     object_key = event['object_key']
@@ -57,7 +60,7 @@ def lambda_handler(event, context):
     # s3_client.download_file(input_bucket, object_key, download_path)
 
     latency, upload_path = video_processing(object_key, download_path)
-    print(latency)
+    # print(latency)
 
     # s3_client.upload_file(upload_path, output_bucket, upload_path.split("/")[FILE_PATH_INDEX])
 
@@ -70,10 +73,10 @@ if __name__ == "__main__":
     event['download_path'] = './dataset/video/' + args.object_key
 
 
-    print()
-    print("#### test: video_processing ####")
+    # print()
+    # print("#### test: video_processing ####")
     total = list()
     for i in range(1):
         total.append(lambda_handler(event=event, context=None))
-    print("mean: " + str(np.mean(total)))
-    print("std:  " + str(np.std(total)))
+    # print("mean: " + str(np.mean(total)))
+    # print("std:  " + str(np.std(total)))

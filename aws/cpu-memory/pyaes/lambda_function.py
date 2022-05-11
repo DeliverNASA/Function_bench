@@ -5,6 +5,9 @@ import pyaes
 import numpy as np
 import argparse
 
+from time_limit import set_time_limit
+
+
 parser = argparse.ArgumentParser()
 parser.add_argument('-length_of_message', type=int, default=1024)
 parser.add_argument('-num_of_iterations', type=int, default=32)
@@ -16,7 +19,7 @@ def generate(length):
     letters = string.ascii_lowercase + string.digits
     return ''.join(random.choice(letters) for i in range(length))
 
-
+@set_time_limit()
 def lambda_handler(event, context):
     length_of_message = event['length_of_message']
     num_of_iterations = event['num_of_iterations']
@@ -48,10 +51,10 @@ if __name__ == "__main__":
     event['length_of_message'] = args.length_of_message
     event['num_of_iterations'] = args.num_of_iterations
 
-    print()
-    print("#### test: pyaes ####")
+    # print()
+    # print("#### test: pyaes ####")
     total = list()
-    for i in range(10):
+    for i in range(1):
         total.append(lambda_handler(event=event, context=None))
-    print("mean: " + str(np.mean(total)))
-    print("std:  " + str(np.std(total)))
+    # print("mean: " + str(np.mean(total)))
+    # print("std:  " + str(np.std(total)))

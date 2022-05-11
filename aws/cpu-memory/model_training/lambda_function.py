@@ -11,12 +11,11 @@ import re
 import io
 import argparse
 
+from time_limit import set_time_limit
+
 parser = argparse.ArgumentParser()
 parser.add_argument('-dataset_object_key', type=str, default="reviews10mb.csv")
 args = parser.parse_args()
-
-
-# s3_client = boto3.client('s3')
 
 cleanup_re = re.compile('[^a-z]+')
 tmp = "./dataset/model/"
@@ -27,7 +26,7 @@ def cleanup(sentence):
     sentence = cleanup_re.sub(' ', sentence).strip()
     return sentence
 
-
+@set_time_limit()
 def lambda_handler(event, context):
     dataset_bucket = event['dataset_bucket']
     dataset_object_key = event['dataset_object_key']
@@ -70,10 +69,10 @@ if __name__ == "__main__":
     # event['model_bucket'] = ""
     event['model_object_key'] = "tmp_lr_model.pk"
 
-    print()
-    print("#### test: model_training ####")
+    # print()
+    # print("#### test: model_training ####")
     total = list()
-    for i in range(10):
+    for i in range(1):
         total.append(lambda_handler(event=event, context=None))
-    print("mean: " + str(np.mean(total)))
-    print("std:  " + str(np.std(total)))
+    # print("mean: " + str(np.mean(total)))
+    # print("std:  " + str(np.std(total)))

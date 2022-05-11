@@ -1,0 +1,13 @@
+f1_length_of_message,f1_num_of_iterations,f2_object_key,ipc
+512,32,testVideo001.mp4,1.8901
+512,48,testVideo001.mp4,1.8561
+512,64,testVideo001.mp4,1.8619
+1024,32,testVideo001.mp4,1.8447
+1024,48,testVideo001.mp4,1.808
+1024,64,testVideo001.mp4,1.7805
+1536,32,testVideo001.mp4,1.824
+1536,48,testVideo001.mp4,1.803
+1536,64,testVideo001.mp4,1.7443
+2048,32,testVideo001.mp4,1.7876
+2048,48,testVideo001.mp4,1.7735
+2048,64,testVideo001.mp4,1.7087

@@ -1,0 +1,11 @@
+f1_dataset_test_object_key,f2_dataset_test_object_key,ipc
+reviews10mb.csv,reviews10mb.csv,1.3924
+reviews10mb.csv,reviews20mb.csv,1.4378
+reviews10mb.csv,reviews50mb.csv,1.4717
+reviews10mb.csv,reviews100mb.csv,1.5144
+reviews20mb.csv,reviews20mb.csv,1.4563
+reviews20mb.csv,reviews50mb.csv,1.4753
+reviews20mb.csv,reviews100mb.csv,1.5213
+reviews50mb.csv,reviews50mb.csv,1.5084
+reviews50mb.csv,reviews100mb.csv,1.5629
+reviews100mb.csv,reviews100mb.csv,1.6036

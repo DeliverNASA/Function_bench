@@ -1,0 +1,11 @@
+f1_object_key,f2_object_key,ipc
+reviews10mb.csv,reviews10mb.csv,1.3593
+reviews10mb.csv,reviews20mb.csv,1.4398
+reviews10mb.csv,reviews50mb.csv,1.4943
+reviews10mb.csv,reviews100mb.csv,1.5393
+reviews20mb.csv,reviews20mb.csv,1.4617
+reviews20mb.csv,reviews50mb.csv,1.5171
+reviews20mb.csv,reviews100mb.csv,1.5713
+reviews50mb.csv,reviews50mb.csv,1.5634
+reviews50mb.csv,reviews100mb.csv,1.6126
+reviews100mb.csv,reviews100mb.csv,1.6566

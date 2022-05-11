@@ -4,9 +4,11 @@ import numpy as np
 import ops
 import argparse
 
+from time_limit import set_time_limit
+
 parser = argparse.ArgumentParser()
 parser.add_argument('-download_path', type=str, default="./dataset/image/")
-parser.add_argument('-object_key', type=str, default="animal-dog.jpg")
+parser.add_argument('-object_key', type=str, default="dog.jpg")
 args = parser.parse_args()
 
 FILE_NAME_INDEX = 2
@@ -24,7 +26,7 @@ def image_processing(file_name, image_path):
     latency = time() - start
     return latency, path_list
 
-
+@set_time_limit()
 def lambda_handler(event, context):
     download_path = event['download_path']
     object_key = event['object_key']
@@ -38,10 +40,10 @@ if __name__ == '__main__':
     event['object_key'] = args.object_key
     event['download_path'] = args.download_path
 
-    print()
-    print("#### test: image_processing ####")
+    # print()
+    # print("#### test: image_processing ####")
     total = list()
-    for i in range(5):
+    for i in range(1):
         total.append(lambda_handler(event=event, context=None))
-    print("mean: " + str(np.mean(total)))
-    print("std:  " + str(np.std(total)))
+    # print("mean: " + str(np.mean(total)))
+    # print("std:  " + str(np.std(total)))

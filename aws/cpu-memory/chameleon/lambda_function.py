@@ -5,6 +5,8 @@ from chameleon import PageTemplate
 import numpy as np
 import argparse
 
+from time_limit import set_time_limit
+
 parser = argparse.ArgumentParser()
 parser.add_argument('-num_of_rows', type=int, default=400)
 parser.add_argument('-num_of_cols', type=int, default=400)
@@ -22,7 +24,7 @@ tal:content="python: d" />
 </tr>
 </table>""" % six.text_type.__name__
 
-
+@set_time_limit()
 def lambda_handler(event, context):
     num_of_rows = event['num_of_rows']
     num_of_cols = event['num_of_cols']
@@ -50,10 +52,10 @@ if __name__ == "__main__":
     event['num_of_rows'] = args.num_of_rows
     event['num_of_cols'] = args.num_of_cols
 
-    print()
-    print("#### test: chameleon ####")
+    # print()
+    # print("#### test: chameleon ####")
     total = list()
-    for i in range(10):
+    for i in range(1):
         total.append(lambda_handler(event=event, context=None))
-    print("mean: " + str(np.mean(total)))
-    print("std:  " + str(np.std(total)))
+    # print("mean: " + str(np.mean(total)))
+    # print("std:  " + str(np.std(total)))

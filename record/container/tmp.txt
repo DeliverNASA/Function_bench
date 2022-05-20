@@ -1,0 +1,10 @@
+# started on Fri May 20 01:02:38 2022
+
+
+ Performance counter stats for 'CPU(s) 0':
+
+    21,840,034,132      instructions              #    1.26  insn per cycle         
+    17,332,088,180      cycles                                                      
+
+       5.001050809 seconds time elapsed
+

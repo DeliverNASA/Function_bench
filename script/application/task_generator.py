@@ -21,14 +21,17 @@ func_range["pyaes_length_of_message"] = [256, 4096]
 func_range["pyaes_num_of_iterations"] = [16, 128]
 
 
-def generate_task(num):
+def generate_task(num, specify=False, specify_func=-1):
     task_num = num
     task_list = []
     while len(task_list) < task_num:
-        func_num = random.randint(0, 10)
-        # abandon function "ml_video_face_detection"
-        while func_num == 7:
+        if not specify:
             func_num = random.randint(0, 10)
+            # abandon function "ml_video_face_detection"
+            while func_num == 7:
+                func_num = random.randint(0, 10)
+        else:
+            func_num = specify_func
 
         func_name = functions[func_num]
         if func_name == "pyaes":

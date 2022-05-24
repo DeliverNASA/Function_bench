@@ -1,4 +1,4 @@
-from task_generator import generate_task, functions
+from script.application.simulation.task_generator import generate_task, functions
 from scheduler import scheduler
 from cmd_parser2 import parse_cmd
 from multiprocessing import Process

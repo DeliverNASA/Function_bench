@@ -1,12 +1,14 @@
 import time
 import joblib
 from sklearn.linear_model import LinearRegression, LogisticRegression
-from sklearn.neighbors import KNeighborsRegressor, KNeighborsTransformer
+from sklearn.neighbors import KNeighborsRegressor
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
 import numpy as np
 from sklearn.svm import SVR
 from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.linear_model import SGDRegressor
 
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import pyplot as plt
@@ -17,8 +19,10 @@ import re
 
 model_basic_path = "./record/model/"
 figure_basic_path = "./record/figure/3D/"
-masks_1 = [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0]
-masks_2 = [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0]
+# masks_1 = [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0]
+# masks_2 = [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0]
+masks_1 = [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+masks_2 = [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
 
 if __name__ == "__main__":
@@ -57,12 +61,14 @@ if __name__ == "__main__":
             x_std = sc.transform(x)
             y = df[cols[-1]]
 
-            model = LinearRegression()
+            # model = LinearRegression()
             # model = DecisionTreeRegressor()
-            # model = KNeighborsRegressor(n_neighbors=3)
+            # model = SVR()
+            model = KNeighborsRegressor(n_neighbors=3)
             model.fit(x_std, y)
             model_file_path = model_basic_path + "%d_%d.pk" % (i, j)
-            joblib.dump(model, model_file_path)
+            # joblib.dump(model, model_file_path)
+            print(model.score(x_std, y))
 
             # test = pd.DataFrame(x_y,columns=list(['f1_num_of_row_col','f2_num_of_row_col']))
             # test = sc.transform(test)

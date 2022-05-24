@@ -98,9 +98,36 @@
 #     process.te
 
 
-a = [[1,2], [3,4]]
-b = []
-b.append(a)
-b.append(a)
-a = []
-print(b)
+# a = [[1,2], [3,4]]
+# b = []
+# b.append(a)
+# b.append(a)
+# a = []
+# print(b)
+
+#!/usr/bin/env python3
+# coding=utf-8
+ 
+import os
+import time
+import signal
+import traceback
+ 
+ 
+def handle_SIGUSR1(signum, frame):
+    print("what are you doing")
+ 
+ 
+def main():
+    signal.signal(signal.SIGUSR1, handle_SIGUSR1)  # 注册SIGUSR1信号的处理器为handle_SIGUSR1函数
+    print(signal.getsignal(signal.SIGUSR1))        # 获取SIGUSR1信号目前的处理器
+ 
+    time.sleep(3)  # 或者使用signal.pause()
+    os.kill(os.getpid(), signal.SIGUSR1)  # 向当前进程发送SIGUSR1信号
+    time.sleep(3)
+ 
+    print('done')
+ 
+ 
+if __name__ == '__main__':
+    main()

@@ -18,10 +18,15 @@ from tools.cmd_parser2 import parse_cmd
 AVAIALBLE_THRESHOLD = 0.05
 REGROUP_PERIOD = 5
 GROUP_SIZE = 5
+RECORD_INTERVAL = 0.1
 
 cpu_log_file = "./script/application/log/cpu.txt"
 latency_record = "./script/application/log/latency.txt"
+time_record = "./script/application/log/time_finish.txt"
 model_basic_path = "./record/model/"
+
+functions = ["chameleon", "feature_extractor", "float_operation", "image_processing", "linpack", "matmul",
+            "ml_lr_prediction", "ml_video_face_detection", "model_training", "pyaes", "video_processing"]
 
 
 class Scheduler:
@@ -36,6 +41,10 @@ class Scheduler:
         self.containers = containers
         self.is_dy_alloc = is_dy_alloc
 
+        self.time_start = 0
+        self.finish_time_list = []
+        self.record_interval = int(all_tasks_num * RECORD_INTERVAL)
+
     def add_task(self, task):
         with self.queue_lock:
             self.queue.put(task.get_command())
@@ -43,7 +52,12 @@ class Scheduler:
     def add_finished_tasks_num(self):
         with self.finished_tasks_num_lock:
             self.finished_tasks_num += 1
+            if self.finished_tasks_num % self.record_interval == 0:
+                self.finish_time_list.append(int(time() - self.time_start))
             return self.finished_tasks_num
+
+    def get_name(self):
+        return self.name
 
     def get_finished_tasks_num(self):
         # read need't a lock
@@ -92,23 +106,26 @@ class Scheduler:
         
 
     def run(self):
-        time_start = time()
+        self.time_start = time()
         try:
             threads = []
             for C in self.containers:
                 t = threading.Thread(target=self.run_container, args=(C,))
                 t.start()
                 threads.append(t)
+            print(threads)
             for t in threads:
                 t.join()
         except:
             print("Error: unable to start thread")
         time_end = time()
-        latency = round(time_end - time_start, 3)
+        latency = round(time_end - self.time_start, 3)
         print("Info: Total latency: "+ str(latency))
         # container_num, scheduler, is_dy, latency
         info = str(len(self.containers)) + "," + self.name + "," + str(self.is_dy_alloc) + "," + str(latency)
         os.system("echo " + info + " >> " + latency_record)
+        info = (",").join(str(x) for x in self.finish_time_list)
+        os.system("echo " + info + " >> " + time_record)
         return latency
 
 
@@ -123,6 +140,10 @@ class PriorityScheduler(Scheduler):
         self.name = "priority"
         self.containers = containers
         self.is_dy_alloc = is_dy_alloc
+
+        self.time_start = 0
+        self.finish_time_list = []
+        self.record_interval = int(all_tasks_num * RECORD_INTERVAL)
 
     def add_task(self, task):
         with self.queue_lock:
@@ -158,6 +179,10 @@ class ML_Scheduler(Scheduler):
         self.group_size = GROUP_SIZE
         self.counter = 0
         self.period = REGROUP_PERIOD    # the period to regroup tasks
+
+        self.time_start = 0
+        self.finish_time_list = []
+        self.record_interval = int(all_tasks_num * RECORD_INTERVAL)
 
     def add_task(self, task):
         with self.queue_lock:
@@ -231,6 +256,8 @@ class ML_Scheduler(Scheduler):
         print("Info: Bring func1 " + str(max_IPC_func1) + " and func2 " + str(max_IPC_func2) + " to the front.")
 
 if __name__ == "__main__":
+    from utils import parse_cmd, functions, Task
+
     # tasks_list = [[6, 10], [8, 50], [8, 100], [9, 2867, 28], [1, 20], [4, 834], [1, 100], [1, 100], [6, 50], [10, 1]]
     # ss = Scheduler(10, ["container1", "container2"], False)
     # for task in tasks_list:
@@ -238,17 +265,16 @@ if __name__ == "__main__":
 
     # ss.run()
 
-    # tasks_list = [[6, 10], [8, 50], [8, 100], [9, 2867, 28], [1, 20], [4, 834], [1, 100], [1, 100], [6, 50], [10, 1]]
-    # ss = PriorityScheduler(10, ["container1", "container2"], 0)
-    # for task in tasks_list:
-    #     ss.add_task(Task(task))
+    tasks_list = [[6, 10], [8, 50], [8, 100], [9, 2867, 28], [1, 20], [4, 834], [1, 100], [1, 100], [6, 50], [10, 1]]
+    ss = PriorityScheduler(10, ["container1", "container2"], 0)
+    for task in tasks_list:
+        ss.add_task(Task(task))
 
     # ss.run()
 
-    from utils import parse_cmd, functions, Task
-    tasks_list = [[6, 10], [8, 50], [8, 100], [9, 2867, 28], [1, 20], [4, 834], [1, 100], [1, 100], [6, 50], [10, 1]]
-    ss = ML_Scheduler(10, ["container1", "container2"], 0)
-    for task in tasks_list:
-        ss.add_task(Task(task))
+    # tasks_list = [[6, 10], [8, 50], [8, 100], [9, 2867, 28], [1, 20], [4, 834], [1, 100], [1, 100], [6, 50], [10, 1]]
+    # ss = ML_Scheduler(10, ["container1", "container2"], 0)
+    # for task in tasks_list:
+    #     ss.add_task(Task(task))
 
     ss.run()

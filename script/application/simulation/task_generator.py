@@ -60,7 +60,7 @@ class Task_generator():
 if __name__ == "__main__":
     tg = Task_generator()
     task_num = 100
-    ss = tg.generate_task(num=task_num, end_time=200)
+    ss = tg.generate_task(num=task_num, end_time=300)
     with open("./script/application/log/task_" + str(task_num) + ".txt", "w") as f:
         for task in ss:
             info = (',').join(str(x) for x in task)

@@ -46,7 +46,7 @@ class Task:
             func_type = 2
         else:
             func_type = 3
-        return func_type * 10000 + func_args[0]
+        return func_type * 2000000 + func_args[0]
 
 
 class CPU_Monitor:

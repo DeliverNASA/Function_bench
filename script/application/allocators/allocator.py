@@ -22,10 +22,11 @@ class Dynamic_allocator():
         self.min_cpu_utilization = min_cpu_utilization
         self.max_cpu_utilization = max_cpu_utilization
     def run(self):
+        os.system("taskset -pc 1-7 " + str(os.getpid()))
         while True:
             # collect data once in a period
             time.sleep(self.period)
-            print("Info: dynamic allocator start analysing...")
+            print("Info: pid " + str(os.getpid()) + " dynamic allocator start analysing...")
             # analysis
             with open(cpu_log_file, "r") as file:
                 line = file.readline()

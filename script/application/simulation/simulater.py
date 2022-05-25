@@ -5,10 +5,12 @@ import threading
 
 
 sys.path.append(os.path.abspath(os.path.join(__file__, "..", "..")))
-print(sys.path)
-from schedulers.utils import Task
+# print(sys.path)
+
+from schedulers.utils import Task, functions
 from schedulers.scheduler import Scheduler, PriorityScheduler, ML_Scheduler
 from allocators.allocator import Dynamic_allocator
+from tools.cmd_parser2 import parse_cmd
 
 
 task_path = "./script/application/log/task_"
@@ -39,11 +41,12 @@ class Simulater():
         last_time = 0
         while len(tasks_list) > 0:
             task_info = tasks_list.pop(0)
-            print(task_info)
-            time_len = float(task_info[0]) - last_time
+            print("Info: " + str(task_info))
+            cur_time = float(task_info[0])
+            time_len = cur_time - last_time
             # waiting for task's arrival
             sleep(time_len)
-            last_time = float(task_info[0])
+            last_time = cur_time
             self.scheduler.add_task(Task(task_info[1]))    # task arrived
 
     def run(self):
@@ -56,9 +59,15 @@ class Simulater():
             
 if __name__ == "__main__":
     os.system("taskset -pc 1-7 " + str(os.getpid()))
+    # run cpu monitor
+    os.system("python3 ./script/application/schedulers/utils.py &")
 
     da = Dynamic_allocator(period=PERIOD, step=STEP, min_cpu_utilization=MIN_CPU_UTILIZATION, max_cpu_utilization=MAX_CPU_UTILIZATION)
-    
+
+    # con_list= [2]
+    # sd_list = ["machine_learning"]
+    # da_list = [False]
+
     con_list= [1, 2]
     sd_list = ["sequential", "priority", "machine_learning"]
     da_list = [False, True]
@@ -67,17 +76,18 @@ if __name__ == "__main__":
 
     for da_op in da_list:
         if not flag_turn_on_dy_alloc and da_op:
+            print("Info: Create dynamic allocator.")
             t_da = threading.Thread(target=da.run, args=(),)
             t_da.start()
+        print("Info: dynamic_allocator: " + str(da_op))
         for con in con_list:
-            os.system("sh ./script/prepare/" + str(da) + "container.sh")
-
+            os.system("sh ./script/prepare/" + str(con) + "container.sh")
             # create container list
             if con == 1:
                 containers = ["container1"]
             else:
                 containers = ["container1", "container2"]
-
+            print("Info: containers: " + str(con))
             for sd in sd_list:
                 if sd == "sequential":
                     S = Scheduler(ALL_TASKS_NUM, containers, da_op)
@@ -85,6 +95,7 @@ if __name__ == "__main__":
                     S = PriorityScheduler(ALL_TASKS_NUM, containers, da_op)
                 elif sd == "machine_learning":
                     S = ML_Scheduler(ALL_TASKS_NUM, containers, da_op)
+                print("Info: scheduler: " + S.get_name())
                 SIMU = Simulater(ALL_TASKS_NUM, S)
                 SIMU.run()
 

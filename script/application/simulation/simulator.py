@@ -22,7 +22,7 @@ STEP = 100000
 MIN_CPU_UTILIZATION=0.1
 MAX_CPU_UTILIZATION=0.9
 
-class Simulater():
+class Simulator():
     def __init__(self, task_num, scheduler) -> None:
         self.task_num = task_num
         self.scheduler = scheduler
@@ -98,7 +98,7 @@ if __name__ == "__main__":
                     elif sd == "machine_learning":
                         S = ML_Scheduler(task_num, containers, da_op)
                     print("Info: scheduler: " + S.get_name())
-                    SIMU = Simulater(task_num, S)
+                    SIMU = Simulator(task_num, S)
                     SIMU.run()
 
                 os.system("sh ./script/prepare/rm_container.sh")

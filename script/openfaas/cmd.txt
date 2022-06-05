@@ -1,0 +1,140 @@
+--image-repository=registry.aliyuncs.com/google_containers 
+
+
+
+1. 启动minikube
+minikube start
+
+2. 集群交互
+kubectl get po -A  // 查看运行的服务
+minikube dashboard // 查看部署的面板
+
+3. 部署应用
+kubectl create deployment hello-minikube --image=*******  // 从指定镜像拉取启动一个容器
+kubectl expose deployment hello-minikube --type=NodePort --port=8080  // 发布服务
+
+e.g:
+kubectl create deployment hello-minikube --image=tomcat:8.0 --port=8080
+kubectl expose deployment hello-minikube --type=NodePort
+
+
+kubectl get services hello-minikube  // 获取所有部署的服务
+
+minikube service hello-minikube  // 添加到服务中
+kubectl port-forward service/hello-minikube 7080:8080 // 暴露端口
+
+4. 管理集群
+minikube pause
+minikube unpause
+minikube stop
+minikube config set memory 16384
+minikube addons list
+minikube start -p aged --kubernetes-version=v1.16.1
+minikube delete --allS
+
+
+5. 查看pods
+kubectl get pods
+
+6. 获取服务地址
+minikube service hello-minikube --url
+
+
+7. kind 使用
+kind create cluster
+kind create cluster --name kind-2
+kind get clusters
+kubectl cluster-info --context kind-kind
+kind delete cluster
+
+8. 工作流
+docker build -t my-custom-image:unique-tag ./my-image-dir
+kind load docker-image my-custom-image:unique-tag
+kubectl apply -f my-manifest-using-my-image:unique-tag
+
+
+password:469b3e9db4d05fecadbb0f59f92b0ef8b4d92967
+
+
+// 部署的时候要把代理关闭，否则会出现请求被拒绝的情况
+// 都使用root用户执行
+kind create cluster
+kubectl apply -f namespaces.yml
+kubectl -n openfaas create secret generic basic-auth \
+    --from-literal=basic-auth-user=admin \
+    --from-literal=basic-auth-password=admin
+// 在apply的时候将faas-netes下面的dep文件imagePullPolicy都改为IfNotPresent，否则会被代理折磨
+kubectl apply -f ./yaml
+kubectl get pods -n openfaas
+kubectl get service -n openfaas
+
+
+pip install PACKAGE -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+// 使用user作kubectl操作时候会出现port错误
+
+// 清除
+kubectl delete secret basic-auth -n openfaas
+kubectl delete -f ./yaml
+kubectl delete namespace openfaas-fn
+kubectl delete namespace openfaas
+
+
+// 使用kinD时需要手动映射端口
+kubectl port-forward svc/gateway -n openfaas 31112:8080 &
+
+
+9. 函数部署
+faas-cli template pull
+faas-cli new add --lang python3-debian -p blueddocker
+faas-cli build -f ./add.yml
+faas-cli push -f ./add.yml  // 推送到远程仓库，部署的时候才能拉区镜像
+faas-cli deploy -f add.yml
+
+在build的时候使用docker build，因为需要修改dockerfile中的pip install 指定镜像
+push镜像的时候需要开代理
+
+取消代理
+unset http_proxy
+unset https_proxy
+export http_proxy="http://127.0.0.1:7890"
+export https_proxy="http://127.0.0.1:7890"
+
+
+如果是自己新建的函数，需要推送到dockerhub，然后部署的时候才能拉取
+docker push blueddocker/add:latest
+
+
+faas-cli invoke nodeinfo
+
+
+# 查看系统代理
+cat ~/.bashrc
+
+prom/alertmanager:v0.18.0
+ghcr.io/openfaas/basic-auth:0.21.4
+ghcr.io/openfaas/gateway:0.22.0
+ghcr.io/openfaas/faas-netes:0.15.0
+nats-streaming:0.22.0
+prom/prometheus:v2.11.0
+ghcr.io/openfaas/queue-worker:0.13.0
+
+
+-i https://pypi.tuna.tsinghua.edu.cn/simple
+
+RUN mv /etc/apt/sources.list /etc/apt/sources.list.bak && \
+   echo "deb http://mirrors.aliyun.com/debian/ buster main non-free contrib" >/etc/apt/sources.list && \
+   echo "deb-src http://mirrors.aliyun.com/debian/ buster main non-free contrib" >>/etc/apt/sources.list && \
+   echo "deb http://mirrors.aliyun.com/debian-security buster/updates main" >>/etc/apt/sources.list && \
+   echo "deb-src http://mirrors.aliyun.com/debian-security buster/updates main" >>/etc/apt/sources.list && \
+   echo "deb http://mirrors.aliyun.com/debian/ buster-updates main non-free contrib" >>/etc/apt/sources.list && \
+   echo "deb-src http://mirrors.aliyun.com/debian/ buster-updates main non-free contrib" >>/etc/apt/sources.list && \
+   echo "deb http://mirrors.aliyun.com/debian/ buster-backports main non-free contrib" >>/etc/apt/sources.list && \
+   echo "deb-src http://mirrors.aliyun.com/debian/ buster-backports main non-free contrib" >>/etc/apt/sources.list
+
+
+几种调用函数的方式
+1. faas invoke // 适用于手动输入参数调用
+2. curl -d '{"hello": "world"}' http://127.0.0.1:8080/function/nodejs-echo // 直接传text或json参数
+   curl --data-binary @README.md http://127.0.0.1:8080/function/nodejs-echo // 传二进制参数
+   uname -a | curl http://127.0.0.1:8080/function/nodejs-echo--data-binary @- // 标准输入传参
